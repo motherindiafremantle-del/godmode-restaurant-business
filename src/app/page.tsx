@@ -58,7 +58,7 @@ export default function HomePage() {
           <nav className="hidden md:flex items-center gap-7 text-xs font-semibold text-slate-400">
             <a href="#youtube" className="hover:text-amber-400 transition-colors">YouTube Channel</a>
             <a href="#features" className="hover:text-amber-400 transition-colors">The 4 Pillars</a>
-            <a href="#casestudy" className="hover:text-amber-400 transition-colors">Mother India Case Study</a>
+            <a href="#casestudy" className="hover:text-amber-400 transition-colors">Real-World Case Study</a>
             <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
           </nav>
 
@@ -323,31 +323,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. CASE STUDY: MOTHER INDIA FREMANTLE */}
+      {/* 6. REAL-WORLD CASE STUDY */}
       <section id="casestudy" className="py-20 px-4 sm:px-8 bg-slate-900/30 border-y border-slate-800">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10">
           <div className="flex-1 space-y-4">
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <ShieldCheck className="w-4 h-4" />
-              <span>Real World Case Study</span>
+              <span>Real-World Field Testing</span>
             </div>
             <h2 className="text-3xl font-black text-white tracking-tight">
-              Tested Nightly at Mother India Fremantle
+              Tested Nightly in High-Volume Commercial Hospitality
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Mother India is an iconic, high-volume Indian restaurant in Fremantle, Western Australia. During peak dinner service on Friday and Saturday nights, hundreds of curries, banquets, and takeaways fly out the door simultaneously.
+              Our architecture is not a toy prototype. It powers live, high-pressure dining operations in Western Australia. During peak dinner service on Friday and Saturday nights, hundreds of covers, complex group banquets, and packed takeaway orders fly out the door simultaneously.
             </p>
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Every feature of GodMode Hub was invented, refined, and battle-hardened in this high-pressure environment. If a screen isn't legible from 2 meters away in steam and heat, or if a button is too small for greasy fingers, it doesn't survive here.
+              Every feature of GodMode Restaurant Business was invented, refined, and battle-hardened in this high-intensity commercial environment. If a screen isn't legible from 2 meters away in steam and heat, or if a button is too small for greasy kitchen hands, it doesn't survive here.
             </p>
             <div className="pt-2 flex flex-wrap gap-4 text-xs font-semibold text-slate-300">
               <div className="flex items-center gap-2 bg-slate-950 px-3 py-2 rounded-xl border border-slate-800">
                 <Flame className="w-4 h-4 text-amber-500" />
-                <span>Fremantle, WA</span>
+                <span>Western Australia</span>
               </div>
               <div className="flex items-center gap-2 bg-slate-950 px-3 py-2 rounded-xl border border-slate-800">
                 <Clock className="w-4 h-4 text-blue-400" />
-                <span>Dinner Shifts 5:00 PM – 10:00 PM</span>
+                <span>Peak Dinner Shifts 5:00 PM – 10:00 PM</span>
               </div>
             </div>
           </div>
