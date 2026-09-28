@@ -19,7 +19,7 @@ function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
 const TEN_HUBS = [
   {
     id: 1,
-    title: "1. Restaurant Operations Hub",
+    title: "1. Restaurant Operations",
     badge: "Core Operations",
     badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
     icon: Store,
@@ -35,7 +35,7 @@ const TEN_HUBS = [
   },
   {
     id: 2,
-    title: "2. Advertising & Analytics Hub",
+    title: "2. Advertising & Analytics",
     badge: "Revenue Growth",
     badgeColor: "bg-orange-500/10 text-orange-400 border-orange-500/20",
     icon: LineChart,
@@ -51,7 +51,7 @@ const TEN_HUBS = [
   },
   {
     id: 3,
-    title: "3. Reputation & Review Hub",
+    title: "3. Reputation Hub",
     badge: "Brand Trust",
     badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
     icon: Star,
@@ -67,7 +67,7 @@ const TEN_HUBS = [
   },
   {
     id: 4,
-    title: "4. Accounting & P&L Hub",
+    title: "4. Accounting Hub",
     badge: "Financial Control",
     badgeColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
     icon: Lock,
@@ -83,7 +83,7 @@ const TEN_HUBS = [
   },
   {
     id: 5,
-    title: "5. Social Media & Content Hub",
+    title: "5. Social Media Hub",
     badge: "Organic Reach",
     badgeColor: "bg-pink-500/10 text-pink-400 border-pink-500/20",
     icon: Share2,
@@ -99,7 +99,7 @@ const TEN_HUBS = [
   },
   {
     id: 6,
-    title: "6. HR, Rostering & Staff Hub",
+    title: "6. HR & Staff",
     badge: "Workforce",
     badgeColor: "bg-teal-500/10 text-teal-400 border-teal-500/20",
     icon: Users,
@@ -115,7 +115,7 @@ const TEN_HUBS = [
   },
   {
     id: 7,
-    title: "7. Inventory & Supplier Hub",
+    title: "7. Inventory & Suppliers",
     badge: "Cost Reduction",
     badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
     icon: PackageSearch,
@@ -131,7 +131,7 @@ const TEN_HUBS = [
   },
   {
     id: 8,
-    title: "8. Customer CRM & Loyalty Hub",
+    title: "8. Customer CRM",
     badge: "Retention",
     badgeColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
     icon: Gift,
@@ -147,7 +147,7 @@ const TEN_HUBS = [
   },
   {
     id: 9,
-    title: "9. AI Campaign Studio Hub",
+    title: "9. AI Campaign Studio",
     badge: "Creative Engine",
     badgeColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
     icon: Wand2,
@@ -163,7 +163,7 @@ const TEN_HUBS = [
   },
   {
     id: 10,
-    title: "10. GodMode Autonomous Command Center",
+    title: "10. God-Like Command Center",
     badge: "Master Intelligence",
     badgeColor: "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border-amber-500/30",
     icon: Cpu,
@@ -403,17 +403,17 @@ export default function HomePage() {
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">POS, Kitchen &amp; Waiter Fleet</td>
                   <td className="p-4 sm:p-5 text-slate-400">Toast / Square / Lightspeed (\$200–\$500/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 1: Restaurant Operations Hub (Included)</td>
+                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 1: Restaurant Operations (Included)</td>
                 </tr>
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">Google &amp; Meta Ads Automation</td>
                   <td className="p-4 sm:p-5 text-slate-400">Digital Marketing Agency (\$1,000–\$2,500/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 2: Advertising &amp; Analytics Hub (Autonomous)</td>
+                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 2: Advertising &amp; Analytics (Autonomous)</td>
                 </tr>
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">Review &amp; Reputation Management</td>
                   <td className="p-4 sm:p-5 text-slate-400">Birdeye / Podium (\$300–\$500/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 3: Reputation &amp; Review Hub (AI Sync)</td>
+                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 3: Reputation Hub (AI Sync)</td>
                 </tr>
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">Daily P&amp;L &amp; Prime Cost Intelligence</td>
@@ -428,22 +428,22 @@ export default function HomePage() {
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">Staff Timesheets &amp; Rostering</td>
                   <td className="p-4 sm:p-5 text-slate-400">7shifts / Deputy (\$150–\$350/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 6: HR &amp; Staff Hub (Encrypted PINs)</td>
+                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 6: HR &amp; Staff (Encrypted PINs)</td>
                 </tr>
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">Stocktake &amp; Recipe Yields</td>
                   <td className="p-4 sm:p-5 text-slate-400">MarketMan / Craftable (\$250–\$450/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 7: Inventory &amp; Supplier Hub</td>
+                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 7: Inventory &amp; Suppliers (Yields &amp; POs)</td>
                 </tr>
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">Customer VIP Points &amp; SMS</td>
                   <td className="p-4 sm:p-5 text-slate-400">Klaviyo / Mailchimp (\$200–\$400/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 8: Customer CRM &amp; SMS Hub</td>
+                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 8: Customer CRM (SMS &amp; VIP Points)</td>
                 </tr>
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">Promotional Graphics &amp; Copy</td>
                   <td className="p-4 sm:p-5 text-slate-400">Freelancers / Agencies (\$500/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 9: AI Campaign Studio Hub</td>
+                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 9: AI Campaign Studio (Ad Gurus &amp; Flyers)</td>
                 </tr>
                 <tr className="bg-amber-500/10 font-bold">
                   <td className="p-4 sm:p-5 text-amber-300">Total Monthly Cost</td>
