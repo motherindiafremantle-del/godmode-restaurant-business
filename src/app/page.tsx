@@ -1,560 +1,1076 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { 
-  Play, Sparkles, Store, LineChart, Star, Lock, Share2, 
-  Users, PackageSearch, Gift, Wand2, Cpu, ArrowRight, Mail, 
-  ExternalLink, CheckCircle2, XCircle, Zap, ShieldCheck, 
-  Layers, ChevronRight, BarChart3, Clock, Flame
+  Store, LineChart, Star, Lock, Share2, 
+  Users, PackageSearch, Gift, Wand2, Monitor, 
+  ArrowRight, Mail, ExternalLink, CheckCircle2, 
+  AlertCircle, ShieldCheck,
+  Menu, X, ArrowUpRight, Check
 } from 'lucide-react';
 
 function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
     </svg>
   );
 }
 
+// Unified 10 Hubs Definition with strict separation of software build vs. integration account status
 const TEN_HUBS = [
   {
     id: 1,
     title: "1. Restaurant Operations",
-    badge: "Core Operations",
-    badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    category: "operations",
     icon: Store,
-    color: "text-blue-400",
-    summary: "Live POS, Waiter Fleet, Kitchen Display (KDS) & Expediter Pass.",
-    replaces: "Toast / Square / Lightspeed ($200–$500/mo)",
-    features: [
-      "Fast Touch POS & dedicated Waiter Mobile app",
-      "Real-time Kitchen Display with iPad 1-tap PIN login",
-      "Expediter Packer Station with container checklists",
-      "Direct online ordering with zero commissions"
-    ]
+    summary: "Kitchen Display (KDS), Waiter Floor Ordering & Order Expediting.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Internal Floor Fleet (No 3rd-party setup)",
+    whatItDoesToday: "Routes dine-in and online tickets across live 3-column kitchen screens, waiter mobile pads, and packing stations with PIN-based station login.",
+    boundaryNote: "Operates internal kitchen and floor workflows. Customer online checkout and bank payment terminals remain separate.",
+    dataShared: "Streams ticket counts, table turn times, and order volume to Accounting and CRM."
   },
   {
     id: 2,
     title: "2. Advertising & Analytics",
-    badge: "Revenue Growth",
-    badgeColor: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+    category: "marketing",
     icon: LineChart,
-    color: "text-orange-400",
-    summary: "Automated Google Ads, Meta Campaigns & GA4 ROI Attribution.",
-    replaces: "Digital Marketing Agency ($1,000–$2,500/mo)",
-    features: [
-      "Autonomous budget monitoring & auto-pause on bleeding ads",
-      "Dynamic negative keyword protection for high-intent search",
-      "Direct ROAS & Cost-Per-Acquisition attribution",
-      "High-value postal code targeting"
-    ]
+    summary: "Google Ads, Meta Ads & Google Analytics 4 (GA4) Performance.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Requires Restaurant Google & Meta Ad Accounts",
+    whatItDoesToday: "Aggregates live spend, clicks, conversion revenue, and blended ROAS across Google Search and Meta Instagram/Facebook campaigns.",
+    boundaryNote: "Monitors and reports advertising metrics. Ad spend and campaign approvals remain under direct operator control.",
+    dataShared: "Supplies 30-day historical conversion figures to Hub 9 (AI Campaign Studio)."
   },
   {
     id: 3,
     title: "3. Reputation Hub",
-    badge: "Brand Trust",
-    badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    category: "marketing",
     icon: Star,
-    color: "text-emerald-400",
-    summary: "Google Reviews, TripAdvisor, and Facebook Inbox Auto-Sync.",
-    replaces: "Birdeye / Podium ($300–$500/mo)",
-    features: [
-      "Instant review webhook sync from Google & Facebook",
-      "AI-crafted contextual review responses",
-      "Negative review alert triggers for floor managers",
-      "Automated post-dining feedback SMS dispatch"
-    ]
+    summary: "Customer Reviews Ingestion & AI Draft Response Assistant.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Facebook Connected · Google Business OAuth Pending",
+    whatItDoesToday: "Pulls customer ratings from Meta Facebook Graph API, highlights negative feedback for manager dispute, and drafts polite owner replies using Gemini AI.",
+    boundaryNote: "AI drafts are recommendations only. All review responses require human manager approval before posting.",
+    dataShared: "Alerts restaurant management to food or service feedback trends."
   },
   {
     id: 4,
     title: "4. Accounting Hub",
-    badge: "Financial Control",
-    badgeColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    category: "finance",
     icon: Lock,
-    color: "text-indigo-400",
-    summary: "Daily Sales, Live Prime Costs, Food COGS & Historical Benchmarks.",
-    replaces: "Restaurant365 / Bookkeeper ($400–$800/mo)",
-    features: [
-      "Daily automated profit & loss calculation every morning",
-      "Real-time Prime Cost tracking (Labor % + Food Cost %)",
-      "Multi-year comparative financial models (2015–2026)",
-      "Daily shift cash & card takings reconciliation"
-    ]
+    summary: "Daily Sales Takings, Food COGS & 11-Year Historical P&L.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Self-Contained (11 Years of Historical Data)",
+    whatItDoesToday: "Calculates daily gross margins, weekly wage-to-sales ratios, and tracks financial performance against historical fiscal benchmarks (2015–2026).",
+    boundaryNote: "Management accounting model. Does not replace statutory tax filing or primary banking software.",
+    dataShared: "Takes sales summaries from Operations and wage hours from HR to compute Prime Cost."
   },
   {
     id: 5,
     title: "5. Social Media Hub",
-    badge: "Organic Reach",
-    badgeColor: "bg-pink-500/10 text-pink-400 border-pink-500/20",
+    category: "marketing",
     icon: Share2,
-    color: "text-pink-400",
-    summary: "AI Post Creator, Visual Content Scheduling & Meta Graph Publishing.",
-    replaces: "Hootsuite / Buffer ($100–$250/mo)",
-    features: [
-      "Multi-platform automated post scheduling",
-      "AI dish caption generator with trending hashtags",
-      "Direct Meta Graph API auto-publishing",
-      "Special event and holiday marketing calendars"
-    ]
+    summary: "AI Caption Creator, Post Scheduling & Meta Graph Publishing.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Meta Facebook & Instagram Connected · Google Profile Pending",
+    whatItDoesToday: "Turns rough owner kitchen notes into polished social posts with hashtags and emojis using Gemini AI, with photo attachments and scheduling calendar.",
+    boundaryNote: "Drafting and dispatch tool. Publishing controls require entered content before activating.",
+    dataShared: "Shares scheduled promotional dates with marketing calendar."
   },
   {
     id: 6,
-    title: "6. HR & Staff",
-    badge: "Workforce",
-    badgeColor: "bg-teal-500/10 text-teal-400 border-teal-500/20",
+    title: "6. HR & Staff Hub",
+    category: "operations",
     icon: Users,
-    color: "text-teal-400",
-    summary: "Staff Directory, PIN Security, Timesheets & Wage Estimations.",
-    replaces: "7shifts / Deputy ($150–$350/mo)",
-    features: [
-      "Encrypted staff PIN management with role-based permissions",
-      "Timesheet entry and shift logging",
-      "Real-time wage cost forecasting against sales",
-      "Staff attendance and hourly labor percentage tracking"
-    ]
+    summary: "Staff Directory, PIN Security, Weekly Rosters & Staff SMS.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Staff Directory Live · Twilio SMS Account Connected",
+    whatItDoesToday: "Manages employee records, assigns encrypted PINs for floor tablets, schedules shifts by day, and dispatches urgent roster updates via Twilio SMS.",
+    boundaryNote: "Roster planning and communication. Formal payroll calculation is exported to accounting.",
+    dataShared: "Provides active staff names to shift rosters and logged labor hours to Accounting."
   },
   {
     id: 7,
-    title: "7. Inventory & Suppliers",
-    badge: "Cost Reduction",
-    badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    title: "7. Inventory & Suppliers Hub",
+    category: "operations",
     icon: PackageSearch,
-    color: "text-amber-400",
-    summary: "Real-Time Stock Tracking, Portion Costs & Automated Purchase Orders.",
-    replaces: "MarketMan / Craftable ($250–$450/mo)",
-    features: [
-      "Live ingredient stocktake with barcode & mobile entry",
-      "Automated low-stock threshold notifications",
-      "Direct supplier purchase order generation",
-      "Waste tracking and recipe cost yields"
-    ]
+    summary: "Stock Tracking, Deliveries, Waste Logs & Magic-Link Stocktaking.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Stock Database Live · COGS Marked Pending Invoices",
+    whatItDoesToday: "Tracks raw ingredients, logs supplier deliveries and kitchen waste, and generates password-free mobile links for staff to count stock on their phones.",
+    boundaryNote: "COGS calculations remain strictly marked 'Pending Data Input' until verified purchase invoices and unit costs are entered.",
+    dataShared: "Feeds ingredient valuation into monthly food cost percentages."
   },
   {
     id: 8,
-    title: "8. Customer CRM",
-    badge: "Retention",
-    badgeColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    title: "8. Customer CRM Hub",
+    category: "marketing",
     icon: Gift,
-    color: "text-purple-400",
-    summary: "VIP Points, Automated SMS Win-Back & Lifetime Spending Segmentation.",
-    replaces: "Klaviyo / Mailchimp ($200–$400/mo)",
-    features: [
-      "Customer lifetime value (LTV) and visit frequency tiers",
-      "Automated SMS re-engagement for lapsed regulars",
-      "Birthday & VIP loyalty rewards engine",
-      "Direct phone number audience syncing"
-    ]
+    summary: "Customer Profiles, VIP Loyalty Tiers & Compliant SMS Campaigns.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Customer Database Live · Twilio SMS Connected",
+    whatItDoesToday: "Compiles order frequency and recency from customer orders, segments frequent diners, enforces marketing opt-in compliance, and sends promotional SMS.",
+    boundaryNote: "Direct SMS marketing requires explicit customer opt-in recorded at checkout.",
+    dataShared: "Reads customer order history to identify VIP tiers and calculate repeat visit rates."
   },
   {
     id: 9,
     title: "9. AI Campaign Studio",
-    badge: "Creative Engine",
-    badgeColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+    category: "marketing",
     icon: Wand2,
-    color: "text-rose-400",
-    summary: "Generative AI Ad Gurus for Google, Meta, and Print Menus.",
-    replaces: "Freelance Copywriters & Designers ($500–$1,000/mo)",
-    features: [
-      "Automated high-converting headline & ad copy generation",
-      "Seasonal menu promotion builder",
-      "Print-ready promotional PDF generator",
-      "A/B test creative variant testing"
-    ]
+    summary: "Gemini AI Ad Creator Grounded in 30-Day Performance Data.",
+    builtStatus: "Built & Live",
+    integrationStatus: "Gemini 2.5 API Connected · Requires Ad Account IDs",
+    whatItDoesToday: "Feeds actual 30-day Google and Meta ad metrics into Google Gemini to write high-converting headlines, ad copy, and promotional flyer themes.",
+    boundaryNote: "Generates creative copy for human review. Does not autonomously alter live ad budgets without confirmation.",
+    dataShared: "Uses performance inputs from Hub 2 (Advertising) to ground AI generation in real data."
   },
   {
     id: 10,
-    title: "10. God-Like Command Center",
-    badge: "Master Intelligence",
-    badgeColor: "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border-amber-500/30",
-    icon: Cpu,
-    color: "text-amber-400",
-    summary: "The Central Multi-Agent Brain Orchestrating All 9 Hubs in Real Time.",
-    replaces: "Hours of daily manual management",
-    features: [
-      "24/7 background agent execution and anomaly detection",
-      "Cross-hub intelligence (Ads sync with Table Occupancy & Stock)",
-      "Daily executive audio & text briefings for owners",
-      "100% self-hosted open-cloud architecture"
-    ]
+    title: "10. Command Center",
+    category: "operations",
+    icon: Monitor,
+    summary: "Executive Overview Aggregating Real-Time Operational Data.",
+    builtStatus: "Executive Overview",
+    integrationStatus: "Internal Server-Side Aggregation Active",
+    whatItDoesToday: "Displays a centralized dashboard of total customer profiles, active rostered staff, tracked inventory items, and quick-launch links to all management hubs.",
+    boundaryNote: "Functions as an executive overview and launchpad. Does not execute autonomous cross-hub orchestration without human initiation.",
+    dataShared: "Aggregates top-level metrics across CRM, HR, and Inventory collections."
+  },
+];
+
+const GALLERY_ITEMS = [
+  {
+    id: "command",
+    title: "Command Center Overview",
+    badge: "Executive Dashboard",
+    image: "/screenshots/screenshot_command_center.png",
+    description: "Central operator launchpad aggregating customer database counts, active staff members, and inventory counts with instant access to all hubs."
+  },
+  {
+    id: "kitchen",
+    title: "Kitchen Display System (KDS)",
+    badge: "Floor Operations",
+    image: "/screenshots/screenshot_kitchen_kds.png",
+    description: "Live 3-column station display for kitchen tablets separating Dine-in tables, Takeaway pickups, and Delivery orders with 1-tap PIN login."
+  },
+  {
+    id: "waiter",
+    title: "Staff Waiter Mobile Pad",
+    badge: "Floor Operations",
+    image: "/screenshots/screenshot_waiter_pad.png",
+    description: "Lightweight browser interface designed for staff phones, enabling table-side ordering, course firing, and instant order dispatch to the kitchen."
+  },
+  {
+    id: "accounting",
+    title: "Accounting & Historical P&L",
+    badge: "Financial Control",
+    image: "/screenshots/screenshot_accounting.png",
+    description: "Morning sales entry, weekly wage ratio comparisons, and multi-year benchmark models spanning 2015 to 2026 with cost-of-goods tracking."
+  },
+  {
+    id: "advertising",
+    title: "Advertising & Blended ROAS",
+    badge: "Revenue Growth",
+    image: "/screenshots/screenshot_advertising.png",
+    description: "Unified marketing view tracking Google Ads search conversions, Meta Instagram spend, and Google Analytics 4 revenue attribution."
   }
 ];
 
 export default function HomePage() {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<'all' | 'operations' | 'marketing' | 'finance'>('all');
+  const [activeGalleryId, setActiveGalleryId] = useState('command');
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  // Pilot Form State
+  const [formData, setFormData] = useState({
+    name: '',
+    restaurantName: '',
+    email: '',
+    phone: '',
+    notes: '',
+    honeypot: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const filteredHubs = activeCategory === 'all' 
+    ? TEN_HUBS 
+    : TEN_HUBS.filter(h => h.category === activeCategory);
+
+  const activeGalleryItem = GALLERY_ITEMS.find(item => item.id === activeGalleryId) || GALLERY_ITEMS[0];
+
+  const handlePilotSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubmitted(true);
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch('/api/pilot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to submit inquiry.');
+      }
+
+      setSubmitSuccess(true);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unable to submit at this time. Please email rikki@godmoderestaurantbusiness.com directly.';
+      setSubmitError(msg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
       
-      {/* 1. TOP ANNOUNCEMENT BANNER */}
-      <aside aria-label="Announcement" className="bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 text-slate-950 px-4 py-2 text-center text-xs font-black tracking-wide flex items-center justify-center gap-2 shadow-sm">
-        <Sparkles className="w-4 h-4 animate-spin text-slate-950" />
-        <span>YOUTUBE LAUNCH: Watch Us Build The 10 Autonomous Hubs In Public</span>
-        <a 
-          href="#youtube" 
-          className="underline font-extrabold hover:text-white transition-colors ml-1 hidden sm:inline"
-        >
-          Watch Episode 1 →
-        </a>
+      {/* 1. TOP ANNOUNCEMENT BAR */}
+      <aside aria-label="Announcement" className="bg-slate-900 border-b border-slate-800 py-2.5 px-4 text-center text-xs">
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-slate-300">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/10 text-amber-400 border border-amber-400/20">
+            Real Restaurant Build
+          </span>
+          <span className="hidden sm:inline">Tested and refined in daily dinner service at Mother India Fremantle (Western Australia).</span>
+          <a 
+            href="https://www.youtube.com/@GodModeRestaurantBusiness" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-red-400 hover:text-red-300 font-semibold inline-flex items-center gap-1 underline underline-offset-2"
+          >
+            <span>Watch series</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </a>
+        </div>
       </aside>
 
-      {/* 2. NAVIGATION BAR */}
-      <header className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-3.5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      {/* 2. NAVIGATION HEADER */}
+      <header className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
-              <Zap className="w-5 h-5 fill-slate-950" />
-            </div>
-            <div>
-              <span className="font-extrabold text-base tracking-tight text-white flex items-center gap-1.5">
-                GodMode <span className="text-amber-400 font-medium text-xs sm:text-sm">Hub</span>
+            <a href="#" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center font-black text-slate-950 shadow-md shadow-amber-500/20 group-hover:bg-amber-400 transition-colors">
+                G
+              </div>
+              <span className="font-extrabold text-base tracking-tight text-white group-hover:text-amber-400 transition-colors">
+                GodMode <span className="text-slate-400 font-medium text-xs hidden sm:inline">Restaurant Business</span>
               </span>
-            </div>
+            </a>
           </div>
 
-          <nav className="hidden md:flex items-center gap-7 text-xs font-semibold text-slate-400">
-            <a href="#hubs" className="hover:text-amber-400 transition-colors">The 10 Hubs</a>
-            <a href="#comparison" className="hover:text-amber-400 transition-colors">GodMode vs Legacy POS</a>
-            <a href="#youtube" className="hover:text-amber-400 transition-colors">YouTube Channel</a>
-            <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
+          {/* Desktop Nav Links */}
+          <nav aria-label="Primary" className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
+            <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
+            <a href="#boundary" className="hover:text-white transition-colors">System Boundary</a>
+            <a href="#hubs" className="hover:text-white transition-colors">The 10 Hubs</a>
+            <a href="#proof" className="hover:text-white transition-colors">Operational Proof</a>
+            <a href="#gallery" className="hover:text-white transition-colors">Product Gallery</a>
+            <a href="#faqs" className="hover:text-white transition-colors">FAQs</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          {/* Header Action Buttons */}
+          <div className="hidden sm:flex items-center gap-3">
             <a
-              href="mailto:rikki@godmoderestaurantbusiness.com"
-              className="hidden lg:inline-flex text-xs text-slate-400 hover:text-white font-medium"
-            >
-              rikki@godmoderestaurantbusiness.com
-            </a>
-            <a
-              href="#youtube"
-              className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-md shadow-red-600/20 active:scale-95"
-            >
-              <YouTubeIcon className="w-4 h-4" />
-              <span>Subscribe</span>
-            </a>
-          </div>
-        </div>
-      </header>
-
-      {/* 3. HERO SECTION */}
-      <section className="relative overflow-hidden pt-20 pb-24 px-4 sm:px-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-        
-        <div className="relative max-w-5xl mx-auto text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs font-semibold">
-            <Layers className="w-3.5 h-3.5 text-amber-400" />
-            <span>The 10-Hub Autonomous Enterprise Operating System</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1]">
-            One Master Brain. <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 bg-clip-text text-transparent">10 Autonomous Hubs.</span>
-          </h1>
-
-          <p className="text-base sm:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed font-normal">
-            Legacy POS systems only cover orders and cash. <strong>GodMode Hub</strong> replaces 10 expensive, disconnected SaaS platforms with one autonomous AI architecture running your operations, ads, reputation, accounting, and staff 24/7.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
-            <a
-              href="#hubs"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-sm px-6 py-3.5 rounded-2xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all min-h-[48px]"
-            >
-              <span>Explore The 10 Hubs</span>
-              <ArrowRight className="w-4 h-4" />
-            </a>
-            <a
-              href="#youtube"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold text-sm px-6 py-3.5 rounded-2xl active:scale-95 transition-all min-h-[48px]"
+              href="https://www.youtube.com/@GodModeRestaurantBusiness"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white bg-slate-900 border border-slate-800 px-3.5 py-2 rounded-lg transition-colors"
             >
               <YouTubeIcon className="w-4 h-4 text-red-500" />
-              <span>Watch The YouTube Series</span>
+              <span>YouTube</span>
+            </a>
+            <a
+              href="#pilot"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-950 bg-amber-500 hover:bg-amber-400 px-4 py-2 rounded-lg transition-all shadow-md shadow-amber-500/20"
+            >
+              <span>Request Pilot</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="pt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
-              <div className="text-2xl sm:text-3xl font-black text-amber-400">10 Hubs</div>
-              <div className="text-xs text-slate-400 font-medium mt-1">Unified Under 1 Master Brain</div>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
-              <div className="text-2xl sm:text-3xl font-black text-white">$2,500+</div>
-              <div className="text-xs text-slate-400 font-medium mt-1">Saved Monthly in Subscriptions</div>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
-              <div className="text-2xl sm:text-3xl font-black text-emerald-400">24/7</div>
-              <div className="text-xs text-slate-400 font-medium mt-1">Autonomous Agent Execution</div>
-            </div>
-            <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
-              <div className="text-2xl sm:text-3xl font-black text-white">0%</div>
-              <div className="text-xs text-slate-400 font-medium mt-1">3rd-Party App Commissions</div>
-            </div>
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
-      </section>
 
-      {/* 4. THE 10 HUBS SHOWCASE */}
-      <section id="hubs" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto space-y-16">
-        <div className="text-center space-y-3 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 uppercase tracking-widest">
-            <Cpu className="w-4 h-4" />
-            <span>Complete Architecture</span>
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            The 10 Pillars of GodMode Hub
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-            Every department of a commercial restaurant, unified into specialized autonomous hubs that communicate with each other in real time.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {TEN_HUBS.map(hub => {
-            const Icon = hub.icon;
-            const isGodMode = hub.id === 10;
-
-            return (
-              <div
-                key={hub.id}
-                className={`p-6 sm:p-7 rounded-3xl border flex flex-col justify-between transition-all hover:scale-[1.01] ${
-                  isGodMode 
-                    ? "bg-gradient-to-b from-amber-500/10 via-slate-900 to-slate-950 border-amber-500/40 ring-1 ring-amber-500/20 md:col-span-2 lg:col-span-3" 
-                    : "bg-slate-900/70 border-slate-800 hover:border-slate-700"
-                }`}
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className={`w-11 h-11 rounded-2xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center font-bold ${hub.color}`}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${hub.badgeColor}`}>
-                      {hub.badge}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-bold text-white tracking-tight">{hub.title}</h3>
-                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">{hub.summary}</p>
-                  </div>
-
-                  <div className="text-[11px] font-mono text-slate-400 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex items-center justify-between">
-                    <span className="text-slate-500">Replaces:</span>
-                    <span className="font-semibold text-amber-400/90">{hub.replaces}</span>
-                  </div>
-
-                  <ul className={`space-y-2 text-xs text-slate-300 pt-1 ${isGodMode ? "grid sm:grid-cols-2 gap-x-6 gap-y-2" : ""}`}>
-                    {hub.features.map((feat, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                        <span className="leading-snug">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="pt-4 mt-6 border-t border-slate-800/60 text-[11px] text-slate-500 flex items-center justify-between">
-                  <span>Hub #{hub.id}</span>
-                  <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Autonomous
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 5. GODMODE VS LEGACY POS: THE COMPARISON TABLE */}
-      <section id="comparison" className="py-24 px-4 sm:px-8 bg-slate-900/40 border-t border-slate-800">
-        <div className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 uppercase tracking-widest">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Architectural Reality Check</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-              GodMode Hub vs The Fragmented Legacy Stack
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Why traditional POS systems (Toast, Square, Lightspeed) only solve 10% of a restaurant's operational pain.
-            </p>
-          </div>
-
-          <div className="overflow-x-auto rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-900 border-b border-slate-800 text-slate-300 font-bold">
-                <tr>
-                  <th className="p-4 sm:p-5">Capability / Department</th>
-                  <th className="p-4 sm:p-5 text-slate-400">Traditional Stack (Toast + 9 Add-ons)</th>
-                  <th className="p-4 sm:p-5 text-amber-400 bg-amber-500/10 font-black">⚡ GodMode Hub (All 10 Hubs)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-300">
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">POS, Kitchen &amp; Waiter Fleet</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Toast / Square / Lightspeed (\$200–\$500/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 1: Restaurant Operations (Included)</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Google &amp; Meta Ads Automation</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Digital Marketing Agency (\$1,000–\$2,500/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 2: Advertising &amp; Analytics (Autonomous)</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Review &amp; Reputation Management</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Birdeye / Podium (\$300–\$500/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 3: Reputation Hub (AI Sync)</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Daily P&amp;L &amp; Prime Cost Intelligence</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Restaurant365 or Manual Bookkeeper (\$400–\$800/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 4: Accounting Hub (Daily Morning P&amp;L)</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Social Media Publishing &amp; Content</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Hootsuite / Buffer (\$100–\$250/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 5: Social Media Hub (Auto-Graph API)</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Staff Timesheets &amp; Rostering</td>
-                  <td className="p-4 sm:p-5 text-slate-400">7shifts / Deputy (\$150–\$350/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 6: HR &amp; Staff (Encrypted PINs)</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Stocktake &amp; Recipe Yields</td>
-                  <td className="p-4 sm:p-5 text-slate-400">MarketMan / Craftable (\$250–\$450/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 7: Inventory &amp; Suppliers (Yields &amp; POs)</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Customer VIP Points &amp; SMS</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Klaviyo / Mailchimp (\$200–\$400/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 8: Customer CRM (SMS &amp; VIP Points)</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Promotional Graphics &amp; Copy</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Freelancers / Agencies (\$500/mo)</td>
-                  <td className="p-4 sm:p-5 bg-amber-500/5 font-semibold text-emerald-400">✅ Hub 9: AI Campaign Studio (Ad Gurus &amp; Flyers)</td>
-                </tr>
-                <tr className="bg-amber-500/10 font-bold">
-                  <td className="p-4 sm:p-5 text-amber-300">Total Monthly Cost</td>
-                  <td className="p-4 sm:p-5 text-red-400 line-through">\$2,500 – \$5,500+ Every Month</td>
-                  <td className="p-4 sm:p-5 text-emerald-400 text-sm font-black">All 10 Hubs In One Autonomous OS</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. YOUTUBE CHANNEL SPOTLIGHT */}
-      <section id="youtube" className="py-24 px-4 sm:px-8 bg-slate-950 border-t border-slate-800">
-        <div className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-red-500 uppercase tracking-widest">
-              <YouTubeIcon className="w-4 h-4" />
-              <span>Official YouTube Channel</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-              Watch The 10 Hubs Built in Public
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              We film the entire engineering, code teardowns, hardware setups, and real commercial kitchen deployments step-by-step.
-            </p>
-          </div>
-
-          {/* YouTube Video Container Mockup */}
-          <div className="relative rounded-3xl overflow-hidden border border-slate-800 bg-slate-900/60 shadow-2xl max-w-4xl mx-auto aspect-video flex flex-col items-center justify-center p-8 group">
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-10" />
-            <div className="absolute w-72 h-72 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-20 text-center space-y-4 max-w-md">
-              <div className="w-20 h-20 rounded-full bg-red-600/90 hover:bg-red-500 flex items-center justify-center text-white mx-auto shadow-2xl shadow-red-600/40 transition-transform group-hover:scale-110 cursor-pointer">
-                <Play className="w-8 h-8 fill-white ml-1" />
-              </div>
-              <div className="space-y-1">
-                <span className="text-xs uppercase font-extrabold text-red-400 tracking-wider">Episode 1 Premiering Soon</span>
-                <h3 className="text-xl sm:text-2xl font-black text-white">Why 10 Separate Apps Are Killing Your Restaurant Margins</h3>
-              </div>
-              <p className="text-xs text-slate-400">
-                Subscribe to @GodModeRestaurantBusiness to get notified as each hub blueprint and video breakdown is released.
-              </p>
+        {/* Mobile Dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-slate-900 border-b border-slate-800 px-4 pt-3 pb-6 space-y-3">
+            <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm text-slate-300 font-medium">How It Works</a>
+            <a href="#boundary" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm text-slate-300 font-medium">System Boundary</a>
+            <a href="#hubs" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm text-slate-300 font-medium">The 10 Hubs</a>
+            <a href="#proof" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm text-slate-300 font-medium">Operational Proof</a>
+            <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm text-slate-300 font-medium">Product Gallery</a>
+            <a href="#faqs" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm text-slate-300 font-medium">FAQs</a>
+            <div className="pt-3 border-t border-slate-800 flex flex-col gap-2">
               <a
                 href="https://www.youtube.com/@GodModeRestaurantBusiness"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-5 py-3 rounded-xl transition-all shadow-lg shadow-red-600/30"
+                className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold text-white bg-slate-800 py-2.5 rounded-lg"
               >
-                <YouTubeIcon className="w-4 h-4" />
-                <span>Subscribe on YouTube</span>
-                <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                <YouTubeIcon className="w-4 h-4 text-red-500" />
+                <span>YouTube Channel</span>
+              </a>
+              <a
+                href="#pilot"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold text-slate-950 bg-amber-500 py-2.5 rounded-lg"
+              >
+                <span>Request a Pilot</span>
               </a>
             </div>
           </div>
+        )}
+      </header>
+
+      {/* 3. HERO SECTION (Dark Navy) */}
+      <section className="relative pt-16 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Independent Restaurant Management System</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
+              Ten restaurant-management hubs. <span className="text-amber-400">Shared data.</span> Built by an independent operator.
+            </h1>
+
+            <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              GodMode is a suite of purpose-built management hubs that share operational data behind the scenes. 
+              It brings together accounting, staff rostering, advertising analytics, CRM, and inventory into one organized management workflow—working alongside your restaurant&apos;s frontline ordering setup.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+              <a
+                href="#pilot"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-amber-500/20"
+              >
+                <span>Request a Pilot / Walkthrough</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
+
+              <a
+                href="https://www.youtube.com/@GodModeRestaurantBusiness"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 font-semibold text-sm px-5 py-3.5 rounded-xl transition-all"
+              >
+                <YouTubeIcon className="w-4 h-4 text-red-500" />
+                <span>Watch the Build Series</span>
+              </a>
+            </div>
+
+            <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>No fabricated numbers</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Privacy-redacted evidence</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Manager-approved AI outputs</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Hero Product Preview */}
+          <div className="lg:col-span-5 relative">
+            <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl p-2">
+              <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden bg-slate-950">
+                <Image
+                  src="/screenshots/screenshot_command_center.png"
+                  alt="GodMode Command Center Executive Dashboard interface showing real customer profiles, rostered staff, and inventory counts"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 500px"
+                  priority
+                  className="object-cover object-top"
+                />
+              </div>
+              <div className="p-3 bg-slate-900/90 flex items-center justify-between text-[11px] text-slate-400">
+                <span className="font-semibold text-slate-300">Live Command Center Overview</span>
+                <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Verified Capture
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
-      {/* 7. LEAD CAPTURE / INSIDER BLUEPRINT */}
-      <section id="contact" className="py-24 px-4 sm:px-8 max-w-4xl mx-auto text-center space-y-8">
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 uppercase tracking-widest">
-            <Mail className="w-4 h-4" />
-            <span>Direct Channel &amp; Insider Access</span>
+      {/* 4. OPERATIONAL BENCHMARKS (Warm Off-White Section) */}
+      <section id="how-it-works" className="bg-slate-100 text-slate-900 py-20 px-4 sm:px-6 lg:px-8 border-y border-slate-300">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-3 py-1 rounded-full">
+              Architecture &amp; Data Flow
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              How the 10 Independent Hubs Share Relevant Data
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              Instead of ten disconnected software tools with ten logins and isolated databases, GodMode links your back-office data where meaningful connections exist.
+            </p>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                <Store className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-slate-900 text-base">Frontline to Accounting</h3>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                Order takings and daily sales from your ordering system stream directly into the morning Accounting P&amp;L, eliminating manual cash-up re-entry.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold">
+                <Users className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-slate-900 text-base">Rosters to Prime Cost</h3>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                Staff shift rosters and logged timesheets provide actual labor figures to calculate live wage-to-sales ratios alongside food costs.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold">
+                <LineChart className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-slate-900 text-base">Performance to AI Copy</h3>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                Actual 30-day Google and Meta campaign returns are fed directly into the Gemini AI Studio so promotional copy is grounded in real historical metrics.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 5. SYSTEM BOUNDARY DIAGRAM (Dark Navy Section) */}
+      <section id="boundary" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-12">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-950 border border-blue-800 px-3 py-1 rounded-full">
+            Transparent Boundaries
+          </span>
           <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Get the Architecture Blueprints &amp; Open-Source Code
+            The Ordering System Boundary Explained
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">
-            Drop your email below to receive the technical architecture diagrams, hardware lists, and direct notifications for new hub releases.
+          <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+            GodMode does not claim to replace your existing POS or card terminals. It provides internal operational tools and back-office management intelligence that work alongside your setup.
           </p>
         </div>
 
-        {submitted ? (
-          <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 max-w-md mx-auto space-y-1">
-            <div className="font-extrabold text-sm">🎉 You're on the insider list!</div>
-            <p className="text-xs text-emerald-400/80">We'll send the 10-Hub blueprints straight to your inbox.</p>
+        {/* Visual Boundary Architecture Map */}
+        <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6 sm:p-10 space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            
+            {/* Frontline Operations Box */}
+            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3 h-3 rounded-full bg-blue-500" />
+                  <h3 className="font-bold text-white text-base">Frontline Floor &amp; Kitchen</h3>
+                </div>
+                <span className="text-[11px] font-semibold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded">
+                  Floor Execution
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Dedicated operational tools designed for floor speed and kitchen coordination during active service:
+              </p>
+              <ul className="space-y-2 text-xs text-slate-300">
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>Waiter Mobile App:</strong> Table ordering and drink firing on staff mobile phones.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>Kitchen Display (KDS):</strong> 3-column live tickets (Dine-in, Takeaway, Delivery) with ticket timers.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>Expediter Packer Station:</strong> Item checklists and bag labels before food leaves the pass.</span>
+                </li>
+              </ul>
+              <div className="pt-2 text-[11px] text-slate-400 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                <em>Customer checkout runs independently. Bank card terminals and cash drawers remain intact.</em>
+              </div>
+            </div>
+
+            {/* Back-Office Management Hubs Box */}
+            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3 h-3 rounded-full bg-amber-500" />
+                  <h3 className="font-bold text-white text-base">Management Hubs</h3>
+                </div>
+                <span className="text-[11px] font-semibold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded">
+                  Back-Office Control
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Management modules running in the office or on the owner&apos;s laptop to oversee finances, staff, and growth:
+              </p>
+              <ul className="space-y-2 text-xs text-slate-300">
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <span><strong>Accounting Hub:</strong> Daily P&amp;L, weekly wage benchmarks, and historical financial trends.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <span><strong>Advertising &amp; Analytics:</strong> Google Ads, Meta campaigns, and GA4 revenue attribution.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <span><strong>HR &amp; CRM:</strong> Staff rostering, timesheet approvals, VIP diner segments, and compliant SMS.</span>
+                </li>
+              </ul>
+              <div className="pt-2 text-[11px] text-slate-400 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                <em>Connects to external APIs (Google, Meta, Twilio) only when restaurant accounts are configured.</em>
+              </div>
+            </div>
+
           </div>
-        ) : (
-          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              required
-              placeholder="Enter your email address..."
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 text-white placeholder-slate-500 text-xs px-4 py-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
-            />
-            <button
-              type="submit"
-              className="w-full sm:w-auto bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-6 py-3.5 rounded-xl transition-all shadow-md shadow-amber-500/20 shrink-0"
-            >
-              Get Blueprints
-            </button>
-          </form>
-        )}
+
+          {/* Data Bridge Summary Bar */}
+          <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+            <div className="flex items-center gap-2 text-slate-300">
+              <span className="font-bold text-white">The Data Connection:</span>
+              <span>Frontline sales summaries, labor hours, and item depletions bridge securely into back-office management.</span>
+            </div>
+            <span className="font-mono text-[11px] text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20 shrink-0">
+              No Shared Passwords · Role PINs
+            </span>
+          </div>
+        </div>
       </section>
 
-      {/* 8. FOOTER */}
-      <footer className="mt-auto bg-slate-950 border-t border-slate-900 px-4 sm:px-8 py-12 text-slate-400 text-xs">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center sm:text-left">
-            <div className="font-extrabold text-white text-sm">GodMode Hub</div>
-            <p className="text-slate-500">The 10-Hub Autonomous Enterprise Operating System for Restaurants.</p>
+      {/* 6. THE 10 HUBS SHOWCASE (Warm Off-White Section with Light Cards) */}
+      <section id="hubs" className="bg-slate-100 text-slate-900 py-20 px-4 sm:px-6 lg:px-8 border-y border-slate-300">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full">
+              Full Suite Directory
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              Scannable Showcase of All Ten Hubs
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              Every hub is purpose-built and available in the software. External services (such as Google Ads or Twilio) operate once your specific business accounts are connected.
+            </p>
+
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap justify-center gap-2 pt-4">
+              <button
+                onClick={() => setActiveCategory('all')}
+                className={`text-xs font-bold px-4 py-2 rounded-xl transition-all ${activeCategory === 'all' ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'}`}
+              >
+                All Ten Hubs (10)
+              </button>
+              <button
+                onClick={() => setActiveCategory('operations')}
+                className={`text-xs font-bold px-4 py-2 rounded-xl transition-all ${activeCategory === 'operations' ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'}`}
+              >
+                Operations &amp; Floor (4)
+              </button>
+              <button
+                onClick={() => setActiveCategory('marketing')}
+                className={`text-xs font-bold px-4 py-2 rounded-xl transition-all ${activeCategory === 'marketing' ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'}`}
+              >
+                Marketing &amp; Reputation (4)
+              </button>
+              <button
+                onClick={() => setActiveCategory('finance')}
+                className={`text-xs font-bold px-4 py-2 rounded-xl transition-all ${activeCategory === 'finance' ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'}`}
+              >
+                Finance &amp; Analytics (2)
+              </button>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+          {/* Hubs Grid with Accessible Light Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredHubs.map((hub) => {
+              const Icon = hub.icon;
+              return (
+                <div key={hub.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800">
+                        <Icon className="w-5 h-5 text-slate-800" />
+                      </div>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                        hub.builtStatus === 'Built & Live' 
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' 
+                          : 'bg-slate-100 text-slate-800 border border-slate-200'
+                      }`}>
+                        {hub.builtStatus}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-lg">{hub.title}</h3>
+                      <p className="text-xs text-slate-500 font-medium">{hub.summary}</p>
+                    </div>
+
+                    <div className="pt-2 text-xs text-slate-700 space-y-2">
+                      <p className="leading-relaxed"><strong>Today:</strong> {hub.whatItDoesToday}</p>
+                      <p className="text-slate-500 text-[11px] leading-relaxed"><strong>Data Shared:</strong> {hub.dataShared}</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-100 space-y-1.5">
+                    <div className="text-[11px] text-slate-600 flex items-center gap-1.5">
+                      <span className="font-semibold text-slate-700">Integration:</span>
+                      <span className="text-slate-500 truncate">{hub.integrationStatus}</span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 italic leading-snug">
+                      {hub.boundaryNote}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* 7. AUTHENTIC REDACTED PRODUCT GALLERY (Dark Navy) */}
+      <section id="gallery" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-10">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-1 rounded-full">
+            Real Software Captures
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Authentic Product Gallery
+          </h2>
+          <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+            Actual interface captures from our live deployment. Personal names, phone numbers, and financial details are strictly redacted for privacy.
+          </p>
+
+          {/* Screenshot Selector Buttons */}
+          <div className="flex flex-wrap justify-center gap-2 pt-2">
+            {GALLERY_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveGalleryId(item.id)}
+                className={`text-xs font-semibold px-3.5 py-2 rounded-xl transition-all ${
+                  activeGalleryId === item.id 
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20' 
+                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                }`}
+              >
+                {item.title}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Active Screenshot Display */}
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-6 shadow-2xl max-w-5xl mx-auto space-y-4">
+          <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800">
+            <Image
+              src={activeGalleryItem.image}
+              alt={`Actual interface screenshot of ${activeGalleryItem.title} with customer and financial figures redacted`}
+              fill
+              sizes="(max-width: 1024px) 100vw, 960px"
+              className="object-cover object-top"
+            />
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2 text-xs">
+            <div>
+              <span className="font-bold text-white text-sm">{activeGalleryItem.title}</span>
+              <p className="text-slate-400 mt-0.5">{activeGalleryItem.description}</p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950 text-emerald-400 border border-emerald-900 text-[11px] font-medium shrink-0 self-start sm:self-auto">
+              <ShieldCheck className="w-3.5 h-3.5" /> Privacy Redacted
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. OPERATIONAL PROOF FROM MOTHER INDIA FREMANTLE (Warm Off-White) */}
+      <section id="proof" className="bg-slate-100 text-slate-900 py-20 px-4 sm:px-6 lg:px-8 border-y border-slate-300">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full">
+              Testing Ground Evidence
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              Confirmed Operational Facts from Mother India Fremantle
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              We do not publish hypothetical savings estimates or unconfirmed marketing claims. Here are the documented operational facts from our testing ground in Fremantle, Western Australia.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <div className="text-3xl font-black text-slate-900">11 Years</div>
+              <h3 className="font-bold text-sm text-slate-800">Historical Benchmarks</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Structured profit &amp; loss statements from 2015 to 2026 modeled to benchmark food COGS and labor percentages.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <div className="text-3xl font-black text-slate-900">10 Hubs</div>
+              <h3 className="font-bold text-sm text-slate-800">Coded &amp; Operational</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Every management hub is written in code with live routes and verified server actions, not mock design concepts.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <div className="text-3xl font-black text-slate-900">Zero</div>
+              <h3 className="font-bold text-sm text-slate-800">Guessed COGS Numbers</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Inventory valuation and COGS calculations remain strictly marked pending until verified invoices are entered.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <div className="text-3xl font-black text-slate-900">100% Human</div>
+              <h3 className="font-bold text-sm text-slate-800">Manager Review</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                All AI-generated promotional copy and review responses require explicit human confirmation prior to dispatch.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm max-w-3xl mx-auto space-y-2 text-xs text-slate-600 leading-relaxed">
+            <p className="font-bold text-slate-900 text-sm">Operator Note on Product Scope:</p>
+            <p>
+              &ldquo;I built GodMode because running an independent restaurant with ten different software subscriptions created data silos. 
+              The system connects what matters without pretending to replace bank payment terminals or running an entire business autonomously without an operator&apos;s judgment.&rdquo;
+            </p>
+            <p className="font-semibold text-slate-800 pt-1">— Rikki, Independent Restaurant Operator &amp; Builder</p>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 9. HONEST YOUTUBE SERIES SPOTLIGHT (Dark Navy) */}
+      <section id="walkthrough" className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full space-y-8">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 text-xs font-bold text-red-500 uppercase tracking-widest bg-red-950/40 border border-red-900/50 px-3 py-1 rounded-full">
+            <YouTubeIcon className="w-4 h-4" />
+            <span>Official YouTube Channel</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Follow the Real-World Build in Public
+          </h2>
+          <p className="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+            Our comprehensive 10-hub video walkthrough is currently in production. Follow our channel for episode releases covering code breakdowns, kitchen trials, and operating lessons.
+          </p>
+        </div>
+
+        {/* Honest Channel Card (No Fake Player) */}
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+          <div className="relative aspect-[21/9] w-full rounded-2xl overflow-hidden border border-slate-800 bg-slate-950">
+            <Image
+              src="/channel_banner.jpg"
+              alt="GodMode Restaurant Business official YouTube channel banner"
+              fill
+              sizes="(max-width: 1024px) 100vw, 800px"
+              className="object-cover"
+            />
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-2">
+            <div className="space-y-1 text-center sm:text-left">
+              <span className="text-xs uppercase font-extrabold text-red-400 tracking-wider">
+                Episode 1 Premiere Coming Soon
+              </span>
+              <h3 className="text-xl font-bold text-white">
+                The 10-Hub Architecture: Why Separate Apps Kill Restaurant Margins
+              </h3>
+              <p className="text-xs text-slate-400">
+                Subscribe to @GodModeRestaurantBusiness to receive the video teardown as soon as it goes live.
+              </p>
+            </div>
+
+            <a
+              href="https://www.youtube.com/@GodModeRestaurantBusiness"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-red-600/30 shrink-0"
+            >
+              <YouTubeIcon className="w-4 h-4" />
+              <span>Subscribe on YouTube</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 10. FREQUENTLY ASKED QUESTIONS (Warm Off-White) */}
+      <section id="faqs" className="bg-slate-100 text-slate-900 py-20 px-4 sm:px-6 lg:px-8 border-y border-slate-300">
+        <div className="max-w-4xl mx-auto space-y-10">
+          
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full">
+              Common Questions
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Straightforward answers about hardware, data boundaries, and pilot participation.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <h3 className="font-bold text-slate-900 text-base">Does GodMode replace my EFTPOS payment terminals?</h3>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                No. GodMode manages internal floor ordering, kitchen routing, and management accounting. Customer credit card terminals and bank merchant accounts remain entirely untouched.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <h3 className="font-bold text-slate-900 text-base">Can I use only specific hubs rather than all ten?</h3>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                Yes. Each hub is built as an independent module. You can use the Kitchen KDS and Waiter Pad without enabling the CRM or Advertising hubs, or use the Accounting P&amp;L standalone.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <h3 className="font-bold text-slate-900 text-base">Where is our restaurant data stored?</h3>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                All restaurant data is stored in dedicated, enterprise-grade Google Cloud Firestore database instances with encrypted access and strict credential segregation.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <h3 className="font-bold text-slate-900 text-base">What hardware is required for the floor tools?</h3>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                Any standard tablet or iPad can run the Kitchen Display screen. Floor staff can access the Waiter Pad on any standard iOS or Android mobile browser using a secure 4-digit PIN.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+              <h3 className="font-bold text-slate-900 text-base">How does the pilot program work?</h3>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                We are testing GodMode with select independent restaurant operators. We walk through your current setup, review what data can be shared, and deploy selected hubs alongside your floor team.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 11. PILOT REQUEST FORM (Dark Navy - Persistent Firestore Storage) */}
+      <section id="pilot" className="py-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full space-y-8">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest bg-amber-950/40 border border-amber-800/40 px-3 py-1 rounded-full">
+            <Mail className="w-4 h-4" />
+            <span>Pilot Inquiries &amp; Walkthroughs</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Request a Pilot or Private Walkthrough
+          </h2>
+          <p className="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+            Fill out your restaurant details below. Submissions are saved securely to our Firestore database and reviewed personally by our founding operator.
+          </p>
+        </div>
+
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+          {submitSuccess ? (
+            <div className="p-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-white">Inquiry Saved Successfully!</h3>
+              <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+                Thank you for reaching out. Your restaurant details have been recorded in our database. We will review your setup and contact you shortly.
+              </p>
+              <div className="pt-2">
+                <a
+                  href="mailto:rikki@godmoderestaurantbusiness.com"
+                  className="text-xs text-amber-400 hover:underline font-semibold"
+                >
+                  Direct email: rikki@godmoderestaurantbusiness.com
+                </a>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handlePilotSubmit} className="space-y-4">
+              {submitError && (
+                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{submitError}</span>
+                </div>
+              )}
+
+              {/* Honeypot field for anti-spam (hidden from users) */}
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="website_hp">Leave this blank</label>
+                <input
+                  type="text"
+                  id="website_hp"
+                  name="website_hp"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.honeypot}
+                  onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5 text-left">
+                  <label htmlFor="name" className="text-xs font-semibold text-slate-300">
+                    Your Name <span className="text-amber-400">*</span>
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    placeholder="e.g. Rikki Kumar"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-600 text-xs px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div className="space-y-1.5 text-left">
+                  <label htmlFor="restaurantName" className="text-xs font-semibold text-slate-300">
+                    Restaurant Name <span className="text-amber-400">*</span>
+                  </label>
+                  <input
+                    id="restaurantName"
+                    type="text"
+                    required
+                    placeholder="e.g. Mother India Fremantle"
+                    value={formData.restaurantName}
+                    onChange={(e) => setFormData({ ...formData, restaurantName: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-600 text-xs px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5 text-left">
+                  <label htmlFor="email" className="text-xs font-semibold text-slate-300">
+                    Email Address <span className="text-amber-400">*</span>
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    placeholder="e.g. owner@restaurant.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-600 text-xs px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div className="space-y-1.5 text-left">
+                  <label htmlFor="phone" className="text-xs font-semibold text-slate-300">
+                    Phone Number (Optional)
+                  </label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    placeholder="e.g. 0406 705 231"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-600 text-xs px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5 text-left">
+                <label htmlFor="notes" className="text-xs font-semibold text-slate-300">
+                  Current Floor Setup or Main Management Bottleneck
+                </label>
+                <textarea
+                  id="notes"
+                  rows={3}
+                  placeholder="Tell us what ordering system you currently use and which hubs you are most interested in testing..."
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-600 text-xs p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                />
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm py-3.5 rounded-xl transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                      <span>Saving to Firestore...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Submit Pilot Request</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="pt-3 text-center space-y-1">
+                <p className="text-[11px] text-slate-500">
+                  <strong>Privacy Notice:</strong> Your information is stored securely in our private Google Cloud database and never shared. Used solely to evaluate pilot eligibility.
+                </p>
+                <p className="text-[11px] text-slate-500">
+                  Need immediate contact? Reach us directly at{' '}
+                  <a href="mailto:rikki@godmoderestaurantbusiness.com" className="text-amber-400 hover:underline">
+                    rikki@godmoderestaurantbusiness.com
+                  </a>
+                </p>
+              </div>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {/* 12. FOOTER */}
+      <footer className="mt-auto bg-slate-950 border-t border-slate-800 py-12 px-4 sm:px-6 lg:px-8 text-slate-400 text-xs">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="space-y-1 text-center sm:text-left">
+            <div className="font-extrabold text-white text-sm">GodMode Restaurant Business</div>
+            <p className="text-slate-500 text-xs">Ten purpose-built restaurant management hubs with shared operational data.</p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             <a
               href="mailto:rikki@godmoderestaurantbusiness.com"
-              className="hover:text-amber-400 transition-colors font-medium"
+              className="hover:text-amber-400 transition-colors font-medium text-xs"
             >
               rikki@godmoderestaurantbusiness.com
             </a>
@@ -562,16 +1078,16 @@ export default function HomePage() {
               href="https://www.youtube.com/@GodModeRestaurantBusiness"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-red-400 hover:text-red-300 font-bold transition-colors"
+              className="flex items-center gap-1.5 text-red-400 hover:text-red-300 font-bold transition-colors text-xs"
             >
               <YouTubeIcon className="w-4 h-4" />
-              <span>YouTube Channel</span>
+              <span>@GodModeRestaurantBusiness</span>
             </a>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-slate-900/80 text-center text-slate-600 text-[11px]">
-          © {new Date().getFullYear()} GodMode Restaurant Business. All rights reserved.
+        <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-slate-900 text-center text-slate-600 text-[11px]">
+          &copy; {new Date().getFullYear()} GodMode Restaurant Business. Tested &amp; refined at Mother India Fremantle, Western Australia. All rights reserved.
         </div>
       </footer>
 
